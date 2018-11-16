@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"fmt"
-
 	"github.com/astaxie/beego"
 )
 
@@ -11,6 +9,8 @@ type IndexController struct {
 }
 
 func (this *IndexController) Get() {
-	uuid := this.GetString("uuid", "jimmy")
-	this.Ctx.WriteString(fmt.Sprintf("<h1>我叫%s</h1>", uuid))
+	//	c.Data["Website"] = "beego.me"
+	//	c.Data["Email"] = "astaxie@gmail.com"
+	//	c.TplName = "index.tpl"
+	this.TplName = "test.tpl"
 }
