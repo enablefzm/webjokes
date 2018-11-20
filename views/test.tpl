@@ -77,22 +77,9 @@
 		<small>Someone famous in <cite title="Source Title">Source Title</cite></small>
 	</blockquote>
 	-->
-	
-	<!--
-	<div class="panel panel-default" style="margin-top:20px;">
-	    <div class="panel-body" style="line-height:2">
-			<span class="label label-default">校园</span>
-			<span class="label label-primary">夫妻夜语</span>
-			<span class="label label-success">黄段子</span>
-			<span class="label label-info">职场故事</span>
-			<span class="label label-warning">家庭笑放</span>
-			<span class="label label-danger">其它</span>
-	    </div>
-	</div>
-	-->
-	
+		
 	<div style="margin-top:10px;margin-right:10px;margin-left:10px;line-height:2">
-		<span class="label label-default">校园</span>
+		<span class="label label-default">校园段子</span>
 		<span class="label label-primary">夫妻夜语</span>
 		<span class="label label-success">黄段子</span>
 		<span class="label label-info">职场故事</span>
@@ -101,11 +88,44 @@
 	</div>
 </div>
 
+<!-- 模态框（Modal）aria-hidden="true" -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="margin-top: 50px;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<!--
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				-->
+				<h4 class="modal-title" id="myModalLabel">
+					登入
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<div class="col-sm-12">
+						<input type="password" class="form-control" id="firstname" placeholder="请输入登入码">
+					</div>
+				</div>
+				<br />
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary">
+					登入系统
+				</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+</div>
+
 
 <!-- jQuery (Bootstrap 插件需要引入) -->
 <script src="/static/js/jquery.min.js"></script>
 <!-- 包含了所有编译插件 -->
 <script src="/static/js/bootstrap.min.js"></script>
-	
+
+<script src="/static/js/webjokes.js"></script>
+
 </body>
 </html>

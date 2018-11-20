@@ -9,8 +9,5 @@ type IndexController struct {
 }
 
 func (this *IndexController) Get() {
-	//	c.Data["Website"] = "beego.me"
-	//	c.Data["Email"] = "astaxie@gmail.com"
-	//	c.TplName = "index.tpl"
-	this.TplName = "test.tpl"
+	this.TplName = "joke.tpl"
 }
