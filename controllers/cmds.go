@@ -6,6 +6,7 @@ import (
 	"webjokes/models"
 
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/context"
 )
 
 const (
@@ -17,46 +18,35 @@ type CmdsControllers struct {
 }
 
 func (this *CmdsControllers) Get() {
+	this.doing()
+}
+
+func (this *CmdsControllers) Post() {
+	this.ServeJSON()
+	// this.doing()
+}
+
+func (this *CmdsControllers) doing() {
+	//	fmt.Println(this.Ctx.Request.RemoteAddr, this.Ctx.Request.UserAgent())
+	//	fmt.Println(this.GetString("cmd"))
 	arrCmd := this.operateCmd()
 	if arrCmd[0] == "" {
 		this.OutJosn("Error", "命令参数无效")
 		return
 	}
-	il := len(arrCmd)
+	// 命令
+	cmd := arrCmd[0]
+	// 参数
+	parames := arrCmd[1:]
+
 	// 判断是否有登入
-	if !this.CheckLogin() {
-		if arrCmd[0] == "login" {
-			// 执行登入
-			if il < 2 {
-				this.OutJosn("LOGIN", map[string]interface{}{
-					"result": false,
-					"info":   "请输入正确登入码",
-				})
-				return
-			}
-			// 判断密码是否正确
-			if ptAdmin, err := models.CheckAdminUser(arrCmd[1]); err != nil {
-				this.OutJosn("LOGIN", map[string]interface{}{
-					"result": false,
-					"info":   "登入码不正确",
-				})
-			} else {
-				// 写入SESSION
-				this.SetSession(ADMIN_USER, ptAdmin)
-				// 返回
-				this.OutJosn("LOGIN", map[string]interface{}{
-					"result": true,
-					"info":   "ok",
-				})
-			}
-			return
-		}
+	if !this.CheckLogin() && cmd != "login" {
 		this.OutJosn("LoginOut", "is not login")
 		return
 	}
 
 	// 转由命令处理对象处理
-	res, err := cmds.RunCmd(this, arrCmd[0], arrCmd)
+	res, err := cmds.RunCmd(this, cmd, parames)
 	if err != nil {
 		this.OutJosn("ERROR", err.Error())
 	}
@@ -76,6 +66,10 @@ func (this *CmdsControllers) CheckLogin() bool {
 	return true
 }
 
+func (this *CmdsControllers) GetCtx() *context.Context {
+	return this.Ctx
+}
+
 func (this *CmdsControllers) GetAdminUser() (*models.AdminUser, bool) {
 	v := this.GetSession(ADMIN_USER)
 	if v == nil {
@@ -86,6 +80,10 @@ func (this *CmdsControllers) GetAdminUser() (*models.AdminUser, bool) {
 		return nil, false
 	}
 	return ptAdmin, true
+}
+
+func (this *CmdsControllers) SetAdminUser(ptAdmin *models.AdminUser) {
+	this.SetSession(ADMIN_USER, ptAdmin)
 }
 
 func (this *CmdsControllers) OutJosn(cmd string, info interface{}) {

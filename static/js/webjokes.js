@@ -50,4 +50,3 @@ var obJoke = (function() {
     // obJoke.showLogin();
     obJoke.init();
 })()
-

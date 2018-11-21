@@ -5,22 +5,6 @@ import (
 	"vava6/vatools"
 )
 
-type Joke struct {
-	id          int
-	content     string
-	keywords    string
-	vote        int
-	commint     int
-	dataTime    int64
-	dataTimeStr string
-}
-
-type JokeSource struct {
-	*Joke
-	isCheck  int8
-	checkIds string
-}
-
 func NewJokeOnRs(rs map[string]string) *Joke {
 	return &Joke{
 		id:          vatools.SInt(rs["id"]),
@@ -28,8 +12,7 @@ func NewJokeOnRs(rs map[string]string) *Joke {
 		keywords:    rs["keywords"],
 		vote:        vatools.SInt(rs["vote"]),
 		commint:     vatools.SInt(rs["commint"]),
-		dataTime:    vatools.SInt64(rs["dateTime"]),
-		dataTimeStr: rs["dateTime"],
+		dateTimeStr: rs["dateTime"],
 	}
 }
 
@@ -53,4 +36,19 @@ func NewJokeSourceOnID(id int) (*JokeSource, error) {
 	rs := rss[0]
 	ptJokesSource := NewJokeSourceOnRs(rs)
 	return ptJokesSource, nil
+}
+
+type Joke struct {
+	id          int
+	content     string
+	keywords    string
+	vote        int
+	commint     int
+	dateTimeStr string
+}
+
+type JokeSource struct {
+	*Joke
+	isCheck  int8
+	checkIds string
 }

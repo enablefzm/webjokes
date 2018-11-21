@@ -2,7 +2,6 @@ package models
 
 import (
 	"testing"
-	"time"
 )
 
 func TestJokes(t *testing.T) {
@@ -11,9 +10,9 @@ func TestJokes(t *testing.T) {
 		t.Log(err.Error())
 		t.Fail()
 	} else {
-		t.Log(pt.dataTime)
-		t.Log(pt.dataTimeStr)
-		// t.Log(time.ParseDuration(pt.dataTimeStr))
-		t.Log(time.Parse("", pt.dataTimeStr))
+		t.Log(pt.dateTimeStr)
 	}
+
+	arr := []string{"1"}
+	t.Log(arr[1:])
 }
