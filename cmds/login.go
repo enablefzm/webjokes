@@ -22,9 +22,13 @@ func login(ptController IFController, cmd string, parames []string) (*CmdResult,
 	// 设定Admin
 	ptController.SetAdminUser(ptAdmin)
 	// 执行LOG信息
-	//	models.DBSave.Insert("login_logs", map[string]interface{}{
-	//		"uid": ptAdmin.GetUid(),
-	//	})
+	models.DBSave.Insert("login_logs", map[string]interface{}{
+		"uid":      ptAdmin.GetUid(),
+		"agent":    ptController.GetCtx().Request.UserAgent(),
+		"remoteIp": ptController.GetCtx().Request.RemoteAddr,
+	})
+	// 更新最后一次登入时间和登入次数
+	ptAdmin.AddLogin()
 	// 返回登入成功
 	return createResult("LOGIN", true, "登入成功"), nil
 }

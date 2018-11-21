@@ -3,12 +3,15 @@ package cmds
 import (
 	"fmt"
 	"webjokes/models"
+
+	"github.com/astaxie/beego/context"
 )
 
 type IFController interface {
 	GetAdminUser() (*models.AdminUser, bool)
 	SetAdminUser(ptAdmin *models.AdminUser)
 	SetSession(name interface{}, value interface{})
+	GetCtx() *context.Context
 }
 
 type CmdResult struct {

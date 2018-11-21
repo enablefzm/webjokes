@@ -5,6 +5,8 @@ import (
 	"vava6/vatools"
 )
 
+var prepareJokes []*JokeSource = make([]*JokeSource, 0, 30)
+
 func NewJokeOnRs(rs map[string]string) *Joke {
 	return &Joke{
 		id:          vatools.SInt(rs["id"]),
@@ -17,7 +19,6 @@ func NewJokeOnRs(rs map[string]string) *Joke {
 }
 
 func NewJokeSourceOnRs(rs map[string]string) *JokeSource {
-	fmt.Println(rs)
 	return &JokeSource{
 		Joke:     NewJokeOnRs(rs),
 		isCheck:  int8(vatools.SInt(rs["is_check"])),

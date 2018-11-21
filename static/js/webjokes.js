@@ -21,8 +21,13 @@ var obJoke = (function() {
     }
 
     _proto.doLogin = function() {
-        window.alert("do login111");
+		var loginPass = $("#loginpass").val()
+		this.send("login " + loginPass)
     }
+	
+	_proto.getRndJoke = function() {
+		this.send("joke rnd")
+	}
 
     _proto.send = function(cmd) {
         var self = this;
@@ -40,6 +45,18 @@ var obJoke = (function() {
             case "LoginOut":
             this.showLogin();
             break;
+			
+			case "LOGIN":
+			var info = result.Info;
+			if (info.result != true) {
+				console.log(info.info);
+			} else {
+				// 隐藏登入框
+				$("#myModal").modal("hide");
+				// 获取一个笑话对象
+				this.getRndJoke();
+			}
+			break;
         }
     }
 

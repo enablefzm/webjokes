@@ -16,6 +16,15 @@ type AdminUser struct {
 
 func (this *AdminUser) AddLogin() {
 	this.logins++
+	DBSave.Update("admin_users", map[string]interface{}{
+		"logins":          this.logins,
+		"last_login_time": vatools.GetNowTimeString(),
+	}, map[string]interface{}{"id": this.id})
+}
+
+func (this *AdminUser) AddCheck() {
+	this.checks++
+	DBSave.Update("admin_users", map[string]interface{}{"checks": this.checks}, map[string]interface{}{"id": this.id})
 }
 
 func (this *AdminUser) GetID() int {

@@ -49,8 +49,9 @@ func (this *CmdsControllers) doing() {
 	res, err := cmds.RunCmd(this, cmd, parames)
 	if err != nil {
 		this.OutJosn("ERROR", err.Error())
+	} else {
+		this.OutJosn(res.CmdKey, res.CmdValue)
 	}
-	this.OutJosn(res.CmdKey, res.CmdValue)
 }
 
 func (this *CmdsControllers) operateCmd() []string {

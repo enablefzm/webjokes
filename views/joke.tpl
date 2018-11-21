@@ -108,7 +108,7 @@
 			<div class="modal-body">
 				<div class="form-group">
 					<div class="col-sm-12">
-						<input type="password" class="form-control" id="firstname" placeholder="请输入登入码">
+						<input type="password" class="form-control" id="loginpass" placeholder="请输入登入码">
 					</div>
 				</div>
 			</div>
