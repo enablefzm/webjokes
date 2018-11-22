@@ -19,7 +19,7 @@ type CmdResult struct {
 	CmdValue interface{}
 }
 
-type docmd func(ptController IFController, cmd string, parames []string) (*CmdResult, error)
+type docmd func(ptController IFController, cmd string, parames []string) *CmdResult
 
 var mpCmds map[string]docmd = make(map[string]docmd, 10)
 
@@ -29,7 +29,7 @@ func RunCmd(ptController IFController, cmd string, parames []string) (*CmdResult
 	if fnCmd, ok := mpCmds[cmd]; !ok {
 		return nil, fmt.Errorf("命令不存在")
 	} else {
-		return fnCmd(ptController, cmd, parames)
+		return fnCmd(ptController, cmd, parames), nil
 	}
 }
 
@@ -37,7 +37,7 @@ func RegCmd(cmdKey string, fnCmd docmd) {
 	mpCmds[cmdKey] = fnCmd
 }
 
-func createResult(key string, success bool, msg string) *CmdResult {
+func createResult(key string, success bool, msg interface{}) *CmdResult {
 	return &CmdResult{
 		CmdKey: key,
 		CmdValue: map[string]interface{}{
@@ -45,4 +45,8 @@ func createResult(key string, success bool, msg string) *CmdResult {
 			"info":   msg,
 		},
 	}
+}
+
+func createError(msg interface{}) *CmdResult {
+	return createResult("ERROR", false, msg)
 }
