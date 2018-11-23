@@ -2,6 +2,13 @@ var obJoke = (function() {
     function JokeWindow() {
         // 变量定义
         var self = this;
+
+        // 绑定下拉菜单设定
+        $(".nav > li > a").bind("click", function() {
+            $("#butMenu").click();
+            console.log(this, this.data);
+        });
+
         // 绑定登入信息
         $("#butLogin").bind("click", function() { self.doLogin(); });
         // 评审不通过
@@ -10,14 +17,28 @@ var obJoke = (function() {
         $("#butOk").bind("click", function() { self.doCheck(2); });
         // 评审为精避
         $("#butGood").bind("click", function() { self.doCheck(3); });
+        // 评审为跳过
+        $("#butJump").bind("click", function() { self.doCheck(4); });
 
+        this.msgBox = $("#msgBox");
+        this.msgBox.hide();
+        // 时间管理对象
+        this.td = null;
+        // 延迟获取随机笑话
+        this.tdJoke = null;
+        // 保存按钮列表
         this.arrButLabel = [];
-        for (var i = 1; i <= 6; i++) {
+        for (var i = 1; i <= 7; i++) {
             var but = $("#jokeType0" + i);
             but.bind("click", function() {
                 self.doSelectLabel(this);
             });
             this.arrButLabel.push(but);
+        }
+        // 判断缓存里是否有保存Sign
+        var loginSing = window.localStorage.getItem("jokeSign");
+        if (loginSing) {
+            $("#loginpass").val(loginSing);
         }
     }
 
@@ -36,6 +57,7 @@ var obJoke = (function() {
             case "4": return "label label-warning";
             case "5": return "label label-danger";
             case "6": return "label label-primary";
+            case "7": return "label label-warning";
             default:
                 return "label label-primary";
         }
@@ -71,9 +93,9 @@ var obJoke = (function() {
     }
 
     _proto.doCheck = function(state) {
-        var cmd = "joke check " + $("#jokeID").val() + " " + state + " " + this.getLabelVal();
-        // this.send(cmd);
-        this.showMsg("这只是个测试!");
+        var id = $("#jokeID").val();
+        var cmd = "joke check " + id + " " + state + " " + this.getLabelVal();
+        this.send(cmd);
     }
 
     _proto.showJokeInfo = function(dbInfo) {
@@ -94,6 +116,7 @@ var obJoke = (function() {
 
     _proto.doLogin = function() {
 		var loginPass = $("#loginpass").val()
+        window.localStorage.setItem("jokeSign", loginPass);
 		this.send("login " + loginPass)
     }
 
@@ -111,10 +134,22 @@ var obJoke = (function() {
         })
     }
 
-    _proto.showMsg = function(strMsg) {
-        // $("#msgBox").attr("class", "alert alert-success");
-        // $("#msgBoxInfo").html(strMsg);
-        $("msgBox").show();
+    _proto.showMsg = function(strMsg, infoType) {
+        if (infoType) {
+            $("#msgTypeInfo").html("错误！");
+            this.msgBox.attr("class", "alert alert-danger");
+        } else {
+            $("#msgTypeInfo").html("提示！");
+            this.msgBox.attr("class", "alert alert-success");
+        }
+        this.msgBox.css("border-radius", "0px");
+        $("#msgBoxInfo").html(strMsg);
+        this.msgBox.fadeIn();
+        if (this.td)
+            window.clearTimeout(this.td);
+        this.td = window.setTimeout(function() {
+           $("#msgBox").fadeOut();
+        }, 2000);
     }
 
     _proto.resultCmd = function(result) {
@@ -130,7 +165,10 @@ var obJoke = (function() {
 			case "LOGIN":
 			var info = result.Info;
 			if (info.result != true) {
-				console.log(info.info);
+				// console.log(info.info);
+                this.showMsg(info.info, true);
+                window.localStorage.clear();
+                $("#loginpass").val("");
 			} else {
 				// 隐藏登入框
 				$("#myModal").modal("hide");
@@ -151,10 +189,17 @@ var obJoke = (function() {
             case "JOKE_CHECK":
             var info = result.Info;
             if (info.result == true) {
-                this.showMsg("操作成功！");
-                this.getRndJoke();
+                $("#jokeContent").html("");
+                $("#jokeID").val(0);
+                this.showMsg("评审操作成功，获取下一条!");
+                if (this.tdJoke)
+                    window.clearTimeout(this.tdJoke);
+                var self = this;
+                this.tdJoke = window.setTimeout(function() {
+                    self.getRndJoke();
+                }, 300);
             } else {
-                this.showMsg(info.info);
+                this.showMsg(info.info, true);
             }
             break;
         }

@@ -22,35 +22,35 @@
 <![endif]-->
 </head>
 <body>
-
-
+<!--
+<div class="alert alert-success" id="msgBox" style="position:absolute;width:100%;margin-top:-60px;z-index:1050;">
+	<strong id="msgTypeInfo">提示！</strong><span id="msgBoxInfo">您的网络连接有问题。</span>
+</div>
+-->
 <div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
 	<div class="container">
 		<div class="navbar-header">
-			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse" id="butMenu">
 				<span class="sr-only">Toggle navigation</span>
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="#">笑话过审系统<small style="font-size:8px;color:#838B8B"> Ver0.01 by vava6.com</small></a>
+			<a class="navbar-brand" href="#">段子过审系统<small style="font-size:8px;color:#838B8B"> Ver0.02 by vava6.com</small></a>
 		</div>
 		<div class="collapse navbar-collapse">
 			<ul class="nav navbar-nav">
-				<li class="active"><a href="#"><i class="glyphicon glyphicon-home"></i> 首页</a></li>
-				<li><a href="#shop"><i class="glyphicon glyphicon-flag"></i> 标签</a></li>
-				<li><a href="#support"><i class="glyphicon glyphicon-log-out"></i> 退出</a></li>
+				<li class="active"><a href="#" id="navHome" data="home"><i class="glyphicon glyphicon-home"></i> 首页</a></li>
+				<li><a href="#" data-toggle="modal" data-target="#myModal" data="edit" ><i class="glyphicon glyphicon-edit"></i> 编辑</a></li>
+				<li><a href="#" data="exit"><i class="glyphicon glyphicon-log-out"></i> 退出</a></li>
 			</ul>
 		</div>
 	</div>
 </div>
-<!-- display:none;-->
-<div class="container" style="position:fixed;width:100%;">
+
+<div class="container" style="position:fixed;width:100%;margin-top:-60px;z-index:1050;padding-right:0px;padding-left:0px;">
 	<div class="alert alert-success" id="msgBox">
-		<a href="#" class="close" data-dismiss="alert">
-			&times;
-		</a>
-		<strong>提示！</strong><span id="msgBoxInfo">您的网络连接有问题。</span>
+		<strong id="msgTypeInfo">提示！</strong><span id="msgBoxInfo">您的网络连接有问题。</span>
 	</div>
 </div>
 
@@ -63,6 +63,7 @@
 	<input type="hidden" id="jokeID" value="" />
  	<h3><i class="glyphicon glyphicon-edit"></i> 请评审</h3>
   	<div class="btn-group btn-group-justified">
+		<div class="btn-group"><button type="button" class="btn btn-primary" id="butJump"><i class="glyphicon glyphicon-refresh"></i> 跳过</button></div>
   	  	<div class="btn-group"><button type="button" class="btn btn-primary" id="butPass"><i class="glyphicon glyphicon-remove"></i> 不过审</button></div>
     	<div class="btn-group"><button type="button" class="btn btn-primary" id="butOk"><i class="glyphicon glyphicon-ok"></i> 过审</button></div>
     	<div class="btn-group"><button type="button" class="btn btn-primary" id="butGood"><i class="glyphicon glyphicon-thumbs-up"></i> 精典</button></div>
@@ -81,9 +82,36 @@
 		<span class="label label-default" value="3" id="jokeType03">夫妻情侣</span>
 		<span class="label label-default" value="4" id="jokeType04">生活家庭</span>
 		<span class="label label-default" value="5" id="jokeType05">职场工作</span>
+		<span class="label label-default" value="7" id="jokeType07">荤段子</span>
 		<span class="label label-default" value="6" id="jokeType06">校园学习</span>
 		<span class="label label-default" value="1" id="jokeType01">其它类型</span>
 	</div>
+</div>
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					模态框（Modal）标题
+				</h4>
+			</div>
+			<div class="modal-body">
+				在这里添加一些文本
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+				</button>
+				<button type="button" class="btn btn-primary">
+					提交更改
+				</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
 </div>
 
 <!-- 模态框（Modal）aria-hidden="true" -->
@@ -121,7 +149,7 @@
 <!-- 包含了所有编译插件 -->
 <script src="/static/js/bootstrap.min.js"></script>
 
-<script src="/static/js/webjokes.js"></script>
+<script src="/static/js/webjokes.js?v01"></script>
 
 </body>
 </html>
