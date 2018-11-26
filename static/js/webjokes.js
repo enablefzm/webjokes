@@ -4,10 +4,22 @@ var obJoke = (function() {
         var self = this;
 
         // 绑定下拉菜单设定
-        $(".nav > li > a").bind("click", function() {
-            $("#butMenu").click();
-            console.log(this, this.data);
-        });
+//        $(".nav > li > a").bind("click", function() {
+//            $("#butMenu").click();
+//            console.log(this);
+//			for (var k in this) {
+//				console.log(k, this[k]);
+//			}
+//        });
+
+		$("#navEdit").bind("click", function() {
+			$("#butMenu").click();
+			self.showEditContent();
+		});
+		
+		$("#butEditSave").bind("click", function() {
+			self.doEditSave();
+		})
 
         // 绑定登入信息
         $("#butLogin").bind("click", function() { self.doLogin(); });
@@ -124,10 +136,12 @@ var obJoke = (function() {
 		this.send("joke rnd")
 	}
 
-    _proto.send = function(cmd) {
+    _proto.send = function(cmd, vParams) {
         var self = this;
         $.ajax({
             url: "/cmds?cmd=" + cmd,
+			method: "post",
+			data: { params: vParams },
             success: function(result) {
                 self.resultCmd(result);
             }
@@ -151,6 +165,16 @@ var obJoke = (function() {
            $("#msgBox").fadeOut();
         }, 2000);
     }
+	
+	_proto.showEditContent = function() {
+		$("#textContent").val($("#jokeContent").html());
+	}
+	
+	_proto.doEditSave = function() {
+		var id = $("#jokeID").val();
+		// 如何发送这个命令呢？
+		this.send("joke edit " + id, $("#textContent").val());
+	}
 
     _proto.resultCmd = function(result) {
         console.log(result);
@@ -202,6 +226,16 @@ var obJoke = (function() {
                 this.showMsg(info.info, true);
             }
             break;
+			
+			// 修改成功
+			case "JOKE_EDIT_CONTENT":
+			var info = result.Info;
+			if (info.result == true) {
+				$("#jokeContent").html(info.info);
+				// 关闭当前编辑窗口
+				$("#myModalEdit").modal("hide");
+				this.showMsg("成功修改段子内容!");
+			}
         }
     }
 

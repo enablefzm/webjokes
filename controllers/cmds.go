@@ -22,8 +22,7 @@ func (this *CmdsControllers) Get() {
 }
 
 func (this *CmdsControllers) Post() {
-	this.ServeJSON()
-	// this.doing()
+	this.doing()
 }
 
 func (this *CmdsControllers) doing() {

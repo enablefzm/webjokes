@@ -1,6 +1,7 @@
 package models
 
 import (
+	"database/sql"
 	"fmt"
 	"vava6/vatools"
 )
@@ -57,6 +58,10 @@ type Joke struct {
 	dateTimeStr string
 }
 
+func (this *Joke) GetContent() string {
+	return this.content
+}
+
 func (this *Joke) GetInfo() map[string]interface{} {
 	return map[string]interface{}{
 		"id":          this.id,
@@ -91,12 +96,24 @@ func (this *JokeSource) SetLabels(strLabels string) {
 	this.labels = strLabels
 }
 
+func (this *JokeSource) updata(mpSave map[string]interface{}) (sql.Result, error) {
+	return DBSave.Update(this.sourceTable, mpSave, map[string]interface{}{"id": this.id})
+}
+
 func (this *JokeSource) Updata() {
-	DBSave.Update(this.sourceTable, map[string]interface{}{
+	this.updata(map[string]interface{}{
 		"is_check":  this.isCheck,
 		"check_ids": this.checkIds,
 		"labels":    this.labels,
-	}, map[string]interface{}{"id": this.id})
+	})
+}
+
+func (this *JokeSource) UpdataContent(strContent string) error {
+	// 处理字符串
+	// TODO 处理有可能被Sql注入的代码
+	this.content = strContent
+	_, err := this.updata(map[string]interface{}{"content": this.content})
+	return err
 }
 
 func (this *JokeSource) GetInfo() map[string]interface{} {

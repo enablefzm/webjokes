@@ -6,19 +6,9 @@ import (
 )
 
 func TestJokes(t *testing.T) {
-	//	rss, err := DBSave.QuerysLimit("*", "joke_text", "is_check=0", 1, 2, "id DESC")
-	//	if err != nil {
-	//		t.Log(err.Error())
-	//	} else {
-	//		for _, rs := range rss {
-	//			t.Log(rs)
-	//		}
-	//	}
-	fmt.Println("count:", OBJokePool.Count())
-	for i := 0; i < 61; i++ {
-		p, _ := OBJokePool.Get()
-		// fmt.Println(p)
-		fmt.Println(p.id, p.content)
+	res, err := LogEditContent(121285177, `真事！<br>某女，出轨，情人劝她离婚和自己一起过，某女就找了个艳阳高照的天回家和丈夫摊牌，说外头有人了，绝壁是真爱，要离婚，巴拉巴拉的，丈夫一听，坚决不同意离，痛哭流涕什么什么的，总之把女的劝得回心转意不想离了。这女的就去找她那情人说不离了，要回去好好和老公过日子巴拉巴拉的，说完之后就走了，情人在家一时想不开啊，翻出一瓶杀虫剂就喝了，以死明志啊！回头说那女的丈夫，就在那女的和情人说分手的那会儿，也在家越想越气啊，好好的媳妇怎么就让人给撬了，也在家喝了一碗杀虫剂以死明志啊！高潮来了，两个男人一前一后就送到了医院，住在同一间重症监护室，重点是那女的来探视的时候，三个人竟愉快的交谈，毫无违和感。<br><br>此事重新刷新我的三观！`, 1, "fzm")
+	if err != nil {
+		t.Log(err.Error())
 	}
-	fmt.Println("count:", OBJokePool.Count())
+	fmt.Println(res)
 }

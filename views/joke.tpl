@@ -41,7 +41,7 @@
 		<div class="collapse navbar-collapse">
 			<ul class="nav navbar-nav">
 				<li class="active"><a href="#" id="navHome" data="home"><i class="glyphicon glyphicon-home"></i> 首页</a></li>
-				<li><a href="#" data-toggle="modal" data-target="#myModal" data="edit" ><i class="glyphicon glyphicon-edit"></i> 编辑</a></li>
+				<li><a href="#" data-toggle="modal" data-target="#myModalEdit" data="edit" id="navEdit"><i class="glyphicon glyphicon-edit"></i> 编辑</a></li>
 				<li><a href="#" data="exit"><i class="glyphicon glyphicon-log-out"></i> 退出</a></li>
 			</ul>
 		</div>
@@ -89,7 +89,7 @@
 </div>
 
 <!-- 模态框（Modal） -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="myModalEdit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -97,16 +97,16 @@
 					&times;
 				</button>
 				<h4 class="modal-title" id="myModalLabel">
-					模态框（Modal）标题
+					编辑段子内容
 				</h4>
 			</div>
 			<div class="modal-body">
-				在这里添加一些文本
+				<textarea class="form-control" rows="16" id="textContent"></textarea>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
 				</button>
-				<button type="button" class="btn btn-primary">
+				<button type="button" class="btn btn-primary" id="butEditSave">
 					提交更改
 				</button>
 			</div>
@@ -149,7 +149,7 @@
 <!-- 包含了所有编译插件 -->
 <script src="/static/js/bootstrap.min.js"></script>
 
-<script src="/static/js/webjokes.js?v01"></script>
+<script src="/static/js/webjokes.js?v02"></script>
 
 </body>
 </html>

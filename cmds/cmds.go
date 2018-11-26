@@ -12,6 +12,7 @@ type IFController interface {
 	SetAdminUser(ptAdmin *models.AdminUser)
 	SetSession(name interface{}, value interface{})
 	GetCtx() *context.Context
+	GetString(key string, def ...string) string
 }
 
 type CmdResult struct {
