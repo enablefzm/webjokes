@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-    <title>笑话过审系统</title>
+    <title>段子过审系统</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="Pragma" content="no-cache">
 	<meta http-equiv="Cache-control" content="no-cache">

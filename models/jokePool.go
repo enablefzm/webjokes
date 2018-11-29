@@ -1,20 +1,31 @@
 package models
 
-var OBJokePool *JokePool = NewJokePool()
+// 获取需要审核的对象
+var OBJokePool *JokePool = NewJokePool(func() ([]map[string]string, error) {
+	return DBSave.QuerysLimit("*", "joke_text", "is_check=0", 1, 30, "id DESC")
+})
+
+var OBPushJokePool *JokePool = NewJokePool(func() ([]map[string]string, error) {
+	return DBSave.QuerysLimit("*", "joke_text", "is_check > 0 AND is_check < 4", 1, 100, "id DESC")
+})
+
+type fnGetJokes func() ([]map[string]string, error)
 
 type JokePool struct {
-	arrJoke []*JokeSource
+	arrJoke   []*JokeSource
+	fGetJokes fnGetJokes
 }
 
-func NewJokePool() *JokePool {
+func NewJokePool(fn fnGetJokes) *JokePool {
 	p := &JokePool{
-		arrJoke: make([]*JokeSource, 0, 30),
+		arrJoke:   make([]*JokeSource, 0, 30),
+		fGetJokes: fn,
 	}
 	return p
 }
 
 func (this *JokePool) loadJokes() int {
-	rss, err := DBSave.QuerysLimit("*", "joke_text", "is_check=0", 1, 30, "id DESC")
+	rss, err := this.fGetJokes()
 	if err != nil {
 		return 0
 	}
