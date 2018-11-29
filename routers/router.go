@@ -9,4 +9,5 @@ import (
 func init() {
 	beego.Router("/", &controllers.IndexController{})
 	beego.Router("/cmds", &controllers.CmdsControllers{})
+	beego.Router("/getjoke", &controllers.GetJokeControllers{})
 }

@@ -20,6 +20,12 @@ var obJoke = (function() {
 		$("#butEditSave").bind("click", function() {
 			self.doEditSave();
 		})
+		
+		$("#navRank").bind("click", function() {
+			$("#butMenu").click();
+			console.log("ok");
+			self.doRank();
+		})
 
         // 绑定登入信息
         $("#butLogin").bind("click", function() { self.doLogin(); });
@@ -175,6 +181,10 @@ var obJoke = (function() {
 		// 如何发送这个命令呢？
 		this.send("joke edit " + id, $("#textContent").val());
 	}
+	
+	_proto.doRank = function() {
+		this.send("rank")
+	}
 
     _proto.resultCmd = function(result) {
         console.log(result);
@@ -236,6 +246,25 @@ var obJoke = (function() {
 				$("#myModalEdit").modal("hide");
 				this.showMsg("成功修改段子内容!");
 			}
+			break;
+			
+			// 查看排行信息
+			case "RANK":
+			var info = result.Info;
+			if (info.result == true) {
+				// 显示信息
+				$("#rankListBox").empty();
+				// 添加内容
+				var arr = info.info;
+				var rankLevel = 1;
+				for (var k in arr) {
+					var db = arr[k];
+					var strHtml = "<tr><td>" + rankLevel + "</td><td>" + db.name + "</td><td style=\"text-align:right;\">" + db.checks + "</td></tr>";
+					$("#rankListBox").append(strHtml);
+					rankLevel++;
+				}
+			}
+			break;
         }
     }
 

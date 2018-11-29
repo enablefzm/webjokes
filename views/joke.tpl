@@ -42,7 +42,7 @@
 			<ul class="nav navbar-nav">
 				<li class="active"><a href="#" id="navHome" data="home"><i class="glyphicon glyphicon-home"></i> 首页</a></li>
 				<li><a href="#" data-toggle="modal" data-target="#myModalEdit" data="edit" id="navEdit"><i class="glyphicon glyphicon-edit"></i> 编辑</a></li>
-				<li><a href="#" data="exit"><i class="glyphicon glyphicon-log-out"></i> 退出</a></li>
+				<li><a href="#" data="rank" id="navRank" data-toggle="modal" data-target="#myModalRank"><i class="glyphicon glyphicon-sort-by-order"></i> 排行</a></li>
 			</ul>
 		</div>
 	</div>
@@ -114,6 +114,54 @@
 	</div><!-- /.modal -->
 </div>
 
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModalRank" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					段子评审排行
+				</h4>
+			</div>
+			<div class="modal-body">
+				<table class="table table-striped">
+					  <thead>
+					    <tr>
+					      <th>排行</th>
+					      <th>姓名</th>
+					      <th style="text-align:right;">过审数量</th>
+					    </tr>
+					  </thead>
+					  <tbody id="rankListBox">
+					    <tr>
+					      <td>1</td>
+					      <td>洪富强</td>
+					      <td>1600</td>
+					    </tr>
+					    <tr>
+					      <td>2</td>
+					      <td>周艺泉</td>
+					      <td>900</td>
+					    </tr>
+					    <tr>
+					      <td>3</td>
+					      <td>蒋武汉</td>
+					      <td>100</td>
+					    </tr>
+					  </tbody>
+					</table>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+				</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+</div>
+
 <!-- 模态框（Modal）aria-hidden="true" -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="margin-top: 50px;">
 	<div class="modal-dialog">
@@ -149,7 +197,7 @@
 <!-- 包含了所有编译插件 -->
 <script src="/static/js/bootstrap.min.js"></script>
 
-<script src="/static/js/webjokes.js?v02"></script>
+<script src="/static/js/webjokes.js?v03"></script>
 
 </body>
 </html>
