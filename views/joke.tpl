@@ -77,14 +77,14 @@
 	</blockquote>
 	-->
 		
-	<div style="margin-top:10px;margin-right:10px;margin-bottom:100px;margin-left:10px;line-height:2">
-		<span class="label label-default" value="2" id="jokeType02">朋友闺蜜</span>
+	<div style="margin-top:10px;margin-right:10px;margin-bottom:100px;margin-left:10px;">
+		<h4 style="line-height:30px;"><span class="label label-default" value="2" id="jokeType02">朋友闺蜜</span>
 		<span class="label label-default" value="3" id="jokeType03">夫妻情侣</span>
 		<span class="label label-default" value="4" id="jokeType04">生活家庭</span>
 		<span class="label label-default" value="5" id="jokeType05">职场工作</span>
 		<span class="label label-default" value="7" id="jokeType07">荤段子</span>
 		<span class="label label-default" value="6" id="jokeType06">校园学习</span>
-		<span class="label label-default" value="1" id="jokeType01">其它类型</span>
+		<span class="label label-default" value="1" id="jokeType01">其它类型</span></h4>
 	</div>
 </div>
 
