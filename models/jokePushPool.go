@@ -27,7 +27,8 @@ func NewJokePushPool() *JokePushPool {
 
 type JokePushPool struct {
 	isRuning   bool
-	nowLoadIdx int     // 当前要被查找的键值
+	nowLoadIdx int // 当前要被查找的键值
+	nowPage    int
 	arrJokes   []*Joke // 数组里存放要被推送给段友的段子
 	nowTime    int64   // 计录当前刷新的时间
 	lk         *sync.RWMutex
@@ -53,7 +54,7 @@ func (this *JokePushPool) GetJoke(idx int) (ResJokePush, error) {
 		}
 
 	}
-	if len(this.arrJokes) < idx {
+	if len(this.arrJokes) <= idx {
 		return ResJokePush{PtJoke: nil, NextIdx: idx}, fmt.Errorf("NULL")
 	}
 	nextIdx := idx + 1
@@ -65,24 +66,45 @@ func (this *JokePushPool) GetJoke(idx int) (ResJokePush, error) {
 
 func (this *JokePushPool) load() {
 	this.nowTime = time.Now().Unix()
-	//	strSql := fmt.Sprintf("SELECT Count(joke_text.id) AS counts FROM joke_text WHERE is_check > 1 AND is_check < 4 AND push = %d", this.nowLoadIdx)
-	//	// 获取随机总理
-	//	rss, err := DBSave.QuerySql(strSql)
-	//	if err != nil || len(rss) < 1 {
-	//		return
-	//	}
-	//	rs := rss[0]
-	//	count := vatools.SInt(rs["counts"])
-	rss, err := DBSave.QuerysLimit("*", "joke_text", fmt.Sprintf("is_check > 1 AND is_check < 4 AND push = %d", this.nowLoadIdx), 1, 100, "id DESC")
+
+	rss, err := this.loadDb()
 	if err != nil {
 		return
 	}
 	il := len(rss)
+	if il < 1 {
+		this.nowLoadIdx = 0
+		rss, err = this.loadDb()
+		if err != nil {
+			return
+		}
+	}
+	il = len(rss)
 	this.arrJokes = make([]*Joke, 0, il)
 	for i := 0; i < il; i++ {
 		rs := rss[i]
 		ptJoke := NewJokeOnRs(rs)
 		this.arrJokes = append(this.arrJokes, ptJoke)
 	}
-	fmt.Println("【加载新段子】")
+}
+
+func (this *JokePushPool) loadDb() ([]map[string]string, error) {
+	this.nowPage++
+	return DBSave.QuerysLimit("*", "joke_text", fmt.Sprintf("is_check > 1 AND is_check < 4 AND push = %d", this.nowLoadIdx), this.nowPage, 100, "id DESC")
+}
+
+// 随机获取
+func (this *JokePushPool) rndLoadDb() ([]map[string]string, error) {
+	// 获取总数量
+	rss, err := DBSave.QuerySql("SELECT Count(joke_text.id) AS jokeCounts FROM joke_text WHERE joke_text.is_check > 1 AND joke_text.is_check < 4")
+	if err != nil {
+		return nil, err
+	}
+	if len(rss) != 1 {
+		return nil, fmt.Errorf("NULL")
+	}
+	rs := rss[0]
+	iCounts := vatools.SInt(rs["jokeCounts"])
+	// 获取随机数量
+	return nil, fmt.Errorf("TEST")
 }
