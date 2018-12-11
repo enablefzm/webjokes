@@ -2,7 +2,7 @@ package models
 
 // 获取需要审核的对象
 var OBJokePool *JokePool = NewJokePool(func() ([]map[string]string, error) {
-	return DBSave.QuerysLimit("*", "joke_text", "is_check=0", 1, 30, "id DESC")
+	return DBSave.QuerysLimit("*", "joke_text", "is_check=0", 1, 60, "id DESC")
 })
 
 type fnGetJokes func() ([]map[string]string, error)

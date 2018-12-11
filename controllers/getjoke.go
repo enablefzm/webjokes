@@ -34,7 +34,8 @@ func (this *GetJokeControllers) doing() {
 	switch act {
 	// 收到分享ID
 	case "share":
-		//		id := vatools.SInt(this.GetString("id"))
+		id := vatools.SInt(this.GetString("id"))
+
 		//		// 获取笑话段子
 		//		rss, err := models.DBSave.Querys("*", "joke_text", "")
 
