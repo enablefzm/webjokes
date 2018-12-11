@@ -8,21 +8,27 @@ import (
 )
 
 const (
-	REFRESH_TIME int64 = 600
+	REFRESH_TIME time.Duration = 600
 )
 
-var OBPushJokePool *JokePushPool = NewJokePushPool()
+var OBPushJokePool *JokePushPool // = NewJokePushPool()
 
 type ResJokePush struct {
 	PtJoke  *Joke
 	NextIdx int
 }
 
+func init() {
+	OBPushJokePool = NewJokePushPool()
+}
+
 func NewJokePushPool() *JokePushPool {
-	return &JokePushPool{
+	pt := &JokePushPool{
 		arrJokes: make([]*Joke, 0, 1),
 		lk:       new(sync.RWMutex),
 	}
+	pt.run()
+	return pt
 }
 
 type JokePushPool struct {
@@ -35,24 +41,27 @@ type JokePushPool struct {
 }
 
 func (this *JokePushPool) GetJoke(idx int) (ResJokePush, error) {
+	if idx < 0 {
+		idx = 0
+	}
 	il := len(this.arrJokes)
 	if idx >= il {
-		// 判断是否需要执行更新
-		nowTimestamp := time.Now().Unix()
-		if (nowTimestamp - this.nowTime) > REFRESH_TIME {
-			// 执行刷新
-			this.lk.Lock()
-			if (nowTimestamp - this.nowTime) > REFRESH_TIME {
-				// 刷新数据
-				this.load()
-			}
-			this.lk.Unlock()
-			idx = 0
-		} else {
-			// 随机获取一个笑话
-			idx = vatools.CRnd(0, il-1)
-		}
-
+		//		// 判断是否需要执行更新
+		//		nowTimestamp := time.Now().Unix()
+		//		if (nowTimestamp - this.nowTime) > REFRESH_TIME {
+		//			// 执行刷新
+		//			this.lk.Lock()
+		//			if (nowTimestamp - this.nowTime) > REFRESH_TIME {
+		//				// 刷新数据
+		//				this.load()
+		//			}
+		//			this.lk.Unlock()
+		//			idx = 0
+		//		} else {
+		//			// 随机获取一个笑话
+		//			idx = vatools.CRnd(0, il-1)
+		//		}
+		idx = vatools.CRnd(0, il-1)
 	}
 	if len(this.arrJokes) <= idx {
 		return ResJokePush{PtJoke: nil, NextIdx: idx}, fmt.Errorf("NULL")
@@ -62,6 +71,22 @@ func (this *JokePushPool) GetJoke(idx int) (ResJokePush, error) {
 		PtJoke:  this.arrJokes[idx],
 		NextIdx: nextIdx,
 	}, nil
+}
+
+func (this *JokePushPool) run() {
+	if this.isRuning {
+		return
+	}
+	// 加载数据
+	this.load()
+	this.isRuning = true
+	tk := time.NewTicker(time.Second * REFRESH_TIME)
+	go func() {
+		for {
+			<-tk.C
+			this.load()
+		}
+	}()
 }
 
 func (this *JokePushPool) load() {
@@ -89,8 +114,16 @@ func (this *JokePushPool) load() {
 }
 
 func (this *JokePushPool) loadDb() ([]map[string]string, error) {
+	return this.rndLoadDb2()
+}
+
+func (this *JokePushPool) baseLoadDb() ([]map[string]string, error) {
 	this.nowPage++
-	return DBSave.QuerysLimit("*", "joke_text", fmt.Sprintf("is_check > 1 AND is_check < 4 AND push = %d", this.nowLoadIdx), this.nowPage, 100, "id DESC")
+	return DBSave.QuerysLimit("*", "joke_text", fmt.Sprintf("is_check > 1 AND is_check < 4 AND push = %d", this.nowLoadIdx), this.nowPage, 80, "id DESC")
+}
+
+func (this *JokePushPool) rndLoadDb2() ([]map[string]string, error) {
+	return DBSave.QuerySql("SELECT * FROM joke_text WHERE joke_text.is_check > 1 AND joke_text.is_check < 4 ORDER BY RAND() LIMIT 80")
 }
 
 // 随机获取
@@ -106,5 +139,19 @@ func (this *JokePushPool) rndLoadDb() ([]map[string]string, error) {
 	rs := rss[0]
 	iCounts := vatools.SInt(rs["jokeCounts"])
 	// 获取随机数量
-	return nil, fmt.Errorf("TEST")
+	arrInts := vatools.GetRndInts(1, iCounts, 1)
+	// 进行100次查询
+	rss = make([]map[string]string, 0, len(arrInts))
+
+	for _, v := range arrInts {
+		rs, err := DBSave.QuerySql(fmt.Sprintf("SELECT * FROM joke_text WHERE joke_text.is_check > 1 AND joke_text.is_check < 4 LIMIT %d, 1", v))
+		if err != nil {
+			continue
+		}
+		if len(rs) < 1 {
+			continue
+		}
+		rss = append(rss, rs[0])
+	}
+	return rss, nil
 }

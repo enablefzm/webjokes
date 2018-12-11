@@ -5,7 +5,7 @@ import (
 )
 
 func rank(ptController IFController, cmd string, parames []string) *CmdResult {
-	rss, err := models.DBSave.QuerysLimit("name,checks,logins", "admin_users", "checks > 0", 1, 100, "checks DESC")
+	rss, err := models.DBSave.QuerysLimit("name,checks,logins", "admin_users", "checks > 0", 1, 10, "checks DESC")
 	if err != nil {
 		return createError(err.Error())
 	}

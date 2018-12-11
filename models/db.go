@@ -24,6 +24,7 @@ func LinkDBServer() error {
 	cfg.Address = "119.23.235.220"
 	cfg.User = "joke"
 	cfg.Pass = "jokeUser&2018"
+	cfg.MaxConn = 50
 
 	fmt.Print("【正在连接数据库...")
 	DBSave, err = mysql.NewDBs(

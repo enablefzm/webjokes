@@ -7,5 +7,9 @@ import (
 )
 
 func main() {
+	// beego.SetLevel(beego.LevelError)
+	// beego.BeeLogger.DelLogger("console")
+	// beego.SetLogger("file", `{"filename":"logs/test.log"}`)
+	// beego.BConfig.Log.AccessLogs = false
 	beego.Run()
 }

@@ -32,10 +32,14 @@ func (this *GetJokeControllers) Post() {
 func (this *GetJokeControllers) doing() {
 	act := this.GetString("act")
 	switch act {
-	//	case "g":
-	//		id := vatools.SInt(this.GetString("id"))
-	//		// 获取笑话段子
-	//		rss, err := models.DBSave.Querys("*", "joke_text", "")
+	// 收到分享ID
+	case "share":
+		//		id := vatools.SInt(this.GetString("id"))
+		//		// 获取笑话段子
+		//		rss, err := models.DBSave.Querys("*", "joke_text", "")
+
+	// 查看分享
+	case "seeshare":
 	default:
 		idx := vatools.SInt(this.GetString("jid"))
 		res, err := models.OBPushJokePool.GetJoke(idx)
