@@ -6,38 +6,18 @@ import (
 )
 
 func TestJokes(t *testing.T) {
-	mp := make(map[int]TmpUser)
-	mp[1] = TmpUser{
-		name: "jimmy",
-		age:  38,
+	i := 10
+	v := true
+	if v {
+		var ii int
+		i, ii = createVal()
+		fmt.Println(i, ii)
 	}
+	fmt.Println(i)
+}
 
-	for k, v := range mp {
-		fmt.Println(k, v)
-		// v.SetName("jimmyFan")
-		p := &v
-		fmt.Printf("%p \n", p)
-		p.name = "jimmyFan"
-		p.SetName("jimmyfan")
-
-		if t, ok := mp[k]; ok {
-			t.name = "jimmyfan1"
-			fmt.Println("set new")
-		}
-
-		fmt.Println(*p)
-
-		//		p := &v
-		//		p.name = "jimmyFan"
-	}
-
-	fmt.Println(mp)
-
-	if t, ok := mp[1]; ok {
-		t.name = "jimmyfan1"
-		mp[1] = t
-		fmt.Println("set new", mp)
-	}
+func createVal() (int, int) {
+	return 9, 8
 }
 
 type TmpUser struct {

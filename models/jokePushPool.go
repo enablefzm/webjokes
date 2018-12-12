@@ -41,10 +41,10 @@ type JokePushPool struct {
 }
 
 func (this *JokePushPool) GetJoke(idx int) (ResJokePush, error) {
-	if idx < 0 {
-		idx = 0
-	}
 	il := len(this.arrJokes)
+	if idx < 0 {
+		idx = il - 1
+	}
 	if idx >= il {
 		//		// 判断是否需要执行更新
 		//		nowTimestamp := time.Now().Unix()
@@ -61,7 +61,8 @@ func (this *JokePushPool) GetJoke(idx int) (ResJokePush, error) {
 		//			// 随机获取一个笑话
 		//			idx = vatools.CRnd(0, il-1)
 		//		}
-		idx = vatools.CRnd(0, il-1)
+		// idx = vatools.CRnd(0, il-1)
+		idx = 0
 	}
 	if len(this.arrJokes) <= idx {
 		return ResJokePush{PtJoke: nil, NextIdx: idx}, fmt.Errorf("NULL")
@@ -91,7 +92,6 @@ func (this *JokePushPool) run() {
 
 func (this *JokePushPool) load() {
 	this.nowTime = time.Now().Unix()
-
 	rss, err := this.loadDb()
 	if err != nil {
 		return
