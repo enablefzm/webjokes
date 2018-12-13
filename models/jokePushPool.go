@@ -24,7 +24,8 @@ func init() {
 
 func NewJokePushPool() *JokePushPool {
 	pt := &JokePushPool{
-		arrJokes: make([]*Joke, 0, 1),
+		tmpJokes: make([]*Joke, 0, 80),
+		arrJokes: make([]*Joke, 0, 80),
 		lk:       new(sync.RWMutex),
 	}
 	pt.run()
@@ -35,6 +36,7 @@ type JokePushPool struct {
 	isRuning   bool
 	nowLoadIdx int // 当前要被查找的键值
 	nowPage    int
+	tmpJokes   []*Joke // 临时缓存笑话段子
 	arrJokes   []*Joke // 数组里存放要被推送给段友的段子
 	nowTime    int64   // 计录当前刷新的时间
 	lk         *sync.RWMutex
@@ -74,6 +76,21 @@ func (this *JokePushPool) GetJoke(idx int) (ResJokePush, error) {
 	}, nil
 }
 
+// 判断当前段子池子里是否这个段子存在
+func (this *JokePushPool) CheckIsExist(jokeID int) bool {
+	for _, v := range this.arrJokes {
+		if v.id == jokeID {
+			return true
+		}
+	}
+	for _, v := range this.tmpJokes {
+		if v.id == jokeID {
+			return true
+		}
+	}
+	return false
+}
+
 func (this *JokePushPool) run() {
 	if this.isRuning {
 		return
@@ -105,6 +122,8 @@ func (this *JokePushPool) load() {
 		}
 	}
 	il = len(rss)
+	// 将上一次的记录放在临时缓存中
+	this.tmpJokes = this.arrJokes
 	this.arrJokes = make([]*Joke, 0, il)
 	for i := 0; i < il; i++ {
 		rs := rss[i]

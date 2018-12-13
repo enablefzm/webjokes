@@ -2,8 +2,8 @@ package models
 
 import (
 	"fmt"
-	"sync"
 	"time"
+	"vava6/pools"
 	"vava6/vatools"
 )
 
@@ -11,60 +11,78 @@ var OBShareJokePool *JokeSharePool
 
 func init() {
 	OBShareJokePool = &JokeSharePool{
-		lk:      new(sync.RWMutex),
-		mpCache: make(map[int]*JokeShare, 100),
+		sharePool: pools.NewPool(func(id interface{}) (pools.IFObject, error) {
+			if jokeID, ok := id.(int); ok {
+				return NewShareJokeNoCreate(jokeID)
+			}
+			return nil, fmt.Errorf("ID Error")
+		}),
 	}
 }
 
 type JokeSharePool struct {
-	lk      *sync.RWMutex
-	mpCache map[int]*JokeShare
+	sharePool *pools.Pool
+}
+
+// 查看分享的ID
+func (this *JokeSharePool) SeeJoke(jokeID int) (*Joke, error) {
+	p, err := this.Get(jokeID)
+	if err != nil {
+		return nil, err
+	}
+	p.seeValue++
+	return p.Joke, nil
 }
 
 // 分享笑话
 func (this *JokeSharePool) ShareJoke(jokeID int) error {
-	var err error
-	this.lk.RLock()
-	ptShareJoke, ok := this.mpCache[jokeID]
-	this.lk.RUnlock()
-	if !ok {
-		this.lk.Lock()
-		ptShareJoke, ok = this.mpCache[jokeID]
-		if !ok {
-			// 从库里新建一个
-			ptShareJoke, err = NewShareJoke(jokeID)
-			if err == nil {
-				this.mpCache[ptShareJoke.JokeSource.id] = ptShareJoke
-			}
-		}
-		this.lk.Unlock()
+	// 判断当前池子里是否有这个ID
+	if !OBPushJokePool.CheckIsExist(jokeID) {
+		return fmt.Errorf("NO EXIST")
 	}
-	// 新增一次分享记录
-	if ptShareJoke != nil {
-		ptShareJoke.shareValue++
-	}
-	return err
-}
-
-func NewShareJoke(jokeID int) (*JokeShare, error) {
-	// 判断当前库里是否有这个对象
-	ptJoke, err := NewShareJokeNoCreate(jokeID)
+	// 从缓存池里获取对象
+	ptJoke, err := this.Get(jokeID)
 	if err != nil {
-		// 如果返回值是NULL说明数据库里没有这个对象则创建
 		if err.Error() == "NULL" {
+			// 从库里创建
 			ptJokeSource, err := NewJokeSourceOnID(jokeID)
 			if err != nil {
-				return nil, err
+				return err
 			}
 			// 生成一个新的JokeShare对象
 			ptJoke = &JokeShare{
 				JokeSource: ptJokeSource,
 			}
 			// 新增保存
-			ptJoke.Save()
+			errSave := ptJoke.Save()
+			if errSave != nil {
+				fmt.Println(errSave.Error())
+			}
+			// 把这个对象放到池子里
+			this.sharePool.Put(jokeID, ptJoke)
+		} else {
+			return err
 		}
 	}
-	return ptJoke, nil
+	if ptJoke != nil {
+		ptJoke.shareValue++
+	}
+	return nil
+}
+
+func (this *JokeSharePool) Get(jokeID int) (*JokeShare, error) {
+	p, err := this.sharePool.Get(jokeID)
+	if err != nil {
+		return nil, err
+	}
+	if ptJoke, ok := p.(*JokeShare); ok {
+		return ptJoke, nil
+	}
+	return nil, fmt.Errorf("TYPE_ERROR")
+}
+
+func (this *JokeSharePool) Save() error {
+	return this.sharePool.Save()
 }
 
 // 创建一个不需

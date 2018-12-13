@@ -35,12 +35,32 @@ func (this *GetJokeControllers) doing() {
 	// 收到分享ID
 	case "share":
 		id := vatools.SInt(this.GetString("id"))
-
-		//		// 获取笑话段子
-		//		rss, err := models.DBSave.Querys("*", "joke_text", "")
-
+		err := models.OBShareJokePool.ShareJoke(id)
+		msg := ""
+		result := 0
+		if err != nil {
+			result = -1
+			msg = err.Error()
+		}
+		this.OutJson(map[string]interface{}{
+			"reuslt": result,
+			"info":   msg,
+		})
 	// 查看分享
 	case "seeshare":
+		id := vatools.SInt(this.GetString("id"))
+		ptJoke, err := models.OBShareJokePool.SeeJoke(id)
+		if err != nil {
+			this.OutJson(map[string]interface{}{
+				"result": -1,
+				"info":   err.Error(),
+			})
+		} else {
+			this.OutJson(map[string]interface{}{
+				"result": 0,
+				"info":   ptJoke.GetInfo(),
+			})
+		}
 	default:
 		idx := vatools.SInt(this.GetString("jid"))
 		res, err := models.OBPushJokePool.GetJoke(idx)
