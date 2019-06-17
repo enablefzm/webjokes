@@ -1,8 +1,31 @@
 package models
 
+import (
+	"vava6/vaini"
+	"vava6/vatools"
+)
+
 // 获取需要审核的对象
 var OBJokePool *JokePool = NewJokePool(func() ([]map[string]string, error) {
-	return DBSave.QuerysLimit("*", "joke_text", "is_check=0", 1, 60, "id DESC")
+	// 获取条件判断信息
+	strSql := "is_check=0 AND vote >= 2000"
+	page := 60
+	desc := "id DESC"
+	// 读取ini文件
+	c := vaini.NewConfig("cfg.ini")
+	if mpCfg, ok := c.GetNode("JOKE_CHECK"); ok {
+		for k, v := range mpCfg {
+			switch k {
+			case "where":
+				strSql = v
+			case "page":
+				page = vatools.SInt(v)
+			case "desc":
+				desc = v
+			}
+		}
+	}
+	return DBSave.QuerysLimit("*", "joke_text", strSql, 1, page, desc)
 })
 
 type fnGetJokes func() ([]map[string]string, error)
@@ -29,7 +52,7 @@ func (this *JokePool) loadJokes() int {
 	if il < 1 {
 		return il
 	}
-	this.arrJoke = make([]*JokeSource, 0, 30)
+	this.arrJoke = make([]*JokeSource, 0, 60)
 	for _, rs := range rss {
 		this.arrJoke = append(this.arrJoke, NewJokeSourceOnRs(rs))
 	}
@@ -71,6 +94,6 @@ func (this *JokePool) Count() int {
 	return i
 }
 
-//	func init() {
-//		OBJokePool = NewJokePool()
-//	}
+func init() {
+	OBJokePool.loadJokes()
+}
